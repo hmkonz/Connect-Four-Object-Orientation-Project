@@ -4,7 +4,7 @@
  * column until a player gets four-in-a-row (horiz, vert, or diag) or until
  * board fills (tie)
  */
-
+// Once the startGame function is executed (when the start game button is clicked), a new class object is instantiated(new Game), the constructor function runs and assigns the HEIGHT, WIDTH, p1 and p2 properties. Also p1 and p2 are assigned as the elements of the array 'players', currPlayer is set equal to p1 and gameOver is set equal to false at the start of the game (before any cells are clicked). The two functions that create the board in memory and an HTML table with row of column tops are also executed so the game can begin.
 class Game {
   constructor(p1, p2, HEIGHT, WIDTH) {
     this.HEIGHT = HEIGHT;
@@ -15,28 +15,9 @@ class Game {
     this.makeHtmlBoard();
     this.gameOver = false;
   }
+  /** makeBoard: creates a memory board structure in-JS:
+  board = array of rows, each row is an array of cells (board[y][x]) */
 
-  // startGame executes makeBoard and makeHtmlBoard functions when start button is clicked
-  // startGame() {
-  //   const startBtn = document.getElementById("btn");
-
-  //   startBtn.addEventListener("click", function () {
-  //     this.makeBoard();
-  //     this.makeHtmlBoard();
-
-  //     let p1Color = document.getElementById("player1-color").value;
-  //     let p1 = new Player(p1Color);
-
-  //     let p2Color = document.getElementById("player2-color").value;
-  //     let p2 = new Player(p2Color);
-
-  //     new Game(p1, p2, 6, 7);
-  //   });
-  // }
-
-  /** makeBoard: create in-JS board structure:
-  board = array of rows, each row is array of cells  (board[y][x])
-  */
   makeBoard() {
     this.board = [];
     for (let y = 0; y < this.HEIGHT; y++) {
@@ -47,7 +28,7 @@ class Game {
       this.board.push(boardArray);
     }
   }
-  /** makeHtmlBoard: make HTML table and row of column tops. */
+  /** makeHtmlBoard: makes an HTML table and row of column tops. */
 
   makeHtmlBoard() {
     const board = document.getElementById("board");
@@ -56,8 +37,7 @@ class Game {
     const top = document.createElement("tr");
     top.setAttribute("id", "column-top");
 
-    // store a reference to the handleClick bound function
-    // so that we can remove the event listener correctly later
+    // store a reference to the handleClick bound function so that we can remove the event listener correctly later
     this.handleGameClick = this.handleClick.bind(this);
 
     top.addEventListener("click", this.handleGameClick);
@@ -69,7 +49,7 @@ class Game {
     }
     board.append(top);
 
-    //     // make main part of board
+    // make main part of board
     for (let y = 0; y < this.HEIGHT; y++) {
       const row = document.createElement("tr");
 
@@ -82,7 +62,7 @@ class Game {
     }
   }
 
-  //   /** findSpotForCol: given column x, return top empty y (null if filled) */
+  /** findSpotForCol: given column x, returns top empty y (null if filled) */
 
   findSpotForCol(x) {
     for (let y = this.HEIGHT - 1; y >= 0; y--) {
@@ -92,7 +72,8 @@ class Game {
     }
     return null;
   }
-  //   /** placeInTable: update DOM to place piece into HTML table of board */
+
+  /** placeInTable: updates DOM to place piece into HTML table of board with a color corresponding to the currPlayer*/
 
   placeInTable(y, x) {
     const piece = document.createElement("div");
@@ -103,14 +84,14 @@ class Game {
     spot.append(piece);
   }
 
-  //   /** endGame: announce game end */
+  /** endGame: announces game end and removes the event listener on the top row so game ends when there's a winner or tie game*/
   endGame(msg) {
     alert(msg);
     const top = document.querySelector("#column-top");
     top.removeEventListener("click", this.handleGameClick);
   }
 
-  //   /** handleClick: handle click of column top to play piece */
+  /** handleClick: handle click of column top to play piece */
   handleClick(evt) {
     // get x from ID of clicked cell
     const x = +evt.target.id;
@@ -197,17 +178,26 @@ class Game {
     }
   }
 }
-
+// the Player class assigns the value of each player's piece when the color is input at the start of the game
 class Player {
   constructor(color) {
     this.color = color;
   }
 }
 
-document.getElementById("btn").addEventListener("click", function () {
+// function startGame assigns p1 and p2 player colors from the Player class and instantiates a new class object (new Game) with the p1, p2, height and width properties
+function startGame() {
   let p1Color = document.getElementById("player1-color").value;
   let p1 = new Player(p1Color);
+
   let p2Color = document.getElementById("player2-color").value;
   let p2 = new Player(p2Color);
+  // a new object is instantiated when the start game button is clicked with the values of p1, p2, HEIGHT and WIDTH then being used when the constructor function is executed
   new Game(p1, p2, 6, 7);
+}
+
+// an event listener is added to the start game button causing the startGame function to be  executed
+document.getElementById("btn").addEventListener("click", function (event) {
+  event.preventDefault();
+  startGame();
 });
